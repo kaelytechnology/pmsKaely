@@ -7,11 +7,19 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Kaely\AuthPackage\Models\User as AuthPackageUser;
 
-class User extends Authenticatable
+class User extends AuthPackageUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasApiTokens;
+
+    /**
+     * The database connection that should be used by the model.
+     *
+     * @var string
+     */
+    protected $connection = 'tenant';
 
     /**
      * The attributes that are mass assignable.
@@ -22,6 +30,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'is_active',
+        'user_add',
+        'user_edit',
+        'user_deleted'
     ];
 
     /**
@@ -44,6 +56,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_active' => 'boolean'
         ];
     }
 }

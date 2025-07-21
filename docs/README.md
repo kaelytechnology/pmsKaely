@@ -1,149 +1,74 @@
-# 📚 Documentación Completa - CMS Multitenant Laravel
+# CMS Multitenant - Documentación Completa
 
-## 🎯 Descripción General
+## 📋 Descripción
 
-Este es un sistema CMS multitenant desarrollado en Laravel que utiliza el paquete `stancl/tenancy` para la gestión de múltiples inquilinos y el paquete `kaelytechnology/auth-package` para la autenticación. El sistema soporta tanto subdominios como dominios completos con bases de datos completamente aisladas.
+Sistema de gestión de contenido (CMS) multitenant desarrollado en Laravel, utilizando el paquete `stancl/tenancy` para la gestión de múltiples inquilinos y el paquete `kaelytechnology/auth-package` para la autenticación. El sistema soporta tanto subdominios como dominios completos con bases de datos completamente aisladas.
 
-## 📋 Índice de Documentación
+## 🚀 Estado del Proyecto
 
-### 🔧 Documentación Técnica
-- **[API_DOCUMENTATION.md](API_DOCUMENTATION.md)** - Documentación técnica completa para desarrolladores e IAs
-- **[GUIA_POSTMAN.md](GUIA_POSTMAN.md)** - Guía paso a paso para probar APIs en Postman
+### ✅ Funcionalidades Implementadas
 
-### 🚀 Guías de Uso
-- **[COMANDOS_ARTISAN.md](COMANDOS_ARTISAN.md)** - Lista completa de comandos Artisan disponibles
-- **[CONFIGURACION.md](CONFIGURACION.md)** - Guía de configuración del sistema
+- **Sistema Multitenant**: Soporte completo para múltiples inquilinos
+- **Autenticación API**: Login, registro y gestión de tokens con Sanctum
+- **Dominios Completos**: Soporte para dominios personalizados (ej: techsolutions.net)
+- **Subdominios**: Soporte para subdominios (ej: tenant.kaelytechnology.test)
+- **Bases de Datos Aisladas**: Cada tenant tiene su propia base de datos
+- **Gestión de Usuarios**: Sistema completo de usuarios con roles y permisos
+- **Comandos Artisan**: Herramientas para gestión y testing de tenants
 
----
+### 🔧 Problemas Resueltos
 
-## 🏗️ Arquitectura del Sistema
+- ✅ **Login API**: Solucionado problema de autenticación en contexto multitenant
+- ✅ **Configuración de Base de Datos**: Migrado de SQLite a MySQL
+- ✅ **Rutas del Tenant**: Implementadas todas las rutas del paquete de autenticación
+- ✅ **Modelos Personalizados**: Configurados para usar conexiones correctas
+- ✅ **SoftDeletes**: Implementado correctamente en todos los tenants
 
-### Tipos de Tenants
-- **🔹 Subdominios**: `{subdominio}.kaelytechnology.test`
-- **🔸 Dominios Completos**: `{dominio}.com/net/etc`
+## 📚 Documentación
 
-### Base de Datos
-- **Formato**: `tenant_{nombre}_{dominio}`
-- **Ejemplo**: `tenant_empresa_global_empresaglobal`
-- **Aislamiento**: Cada tenant tiene su propia base de datos
+### 📖 Guías Principales
 
-### Autenticación
-- **Laravel Sanctum** para tokens API
-- **Modelo User** con soft deletes
-- **Sistema de roles y permisos** del paquete auth
+- [**Configuración del Sistema**](CONFIGURACION.md) - Configuración completa del entorno
+- [**Documentación API**](API_DOCUMENTATION.md) - Especificaciones técnicas de la API
+- [**Guía Postman**](GUIA_POSTMAN.md) - Cómo probar la API con Postman
+- [**Comandos Artisan**](COMANDOS_ARTISAN.md) - Todos los comandos disponibles
+- [**Solución Login API**](SOLUCION_LOGIN_API.md) - Documentación de la solución del problema de autenticación
 
----
+### 🔗 Enlaces Rápidos
 
-## 🎮 Tenants Disponibles
+- [**Postman Collection**](CMS_Multitenant_API.postman_collection.json) - Colección para importar en Postman
+- [**Configuración del Paquete**](config/auth-package.php) - Configuración del paquete de autenticación
 
-### 🔹 Tenants con Subdominios (3)
-| # | Nombre | Dominio | Usuario | Contraseña |
-|---|--------|---------|---------|------------|
-| 1 | Kaely | kaelytechnology.kaelytechnology.test | user687db17b8c62e@example.com | password123 |
-| 2 | Tenant 1 | tenant1.kaelytechnology.test | usertenant1@example.com | password123 |
-| 3 | Mi Empresa | miempresa.kaelytechnology.test | user687dc24f975d7@example.com | password123 |
+## 🛠️ Instalación y Configuración
 
-### 🔸 Tenants con Dominios Completos (2)
-| # | Nombre | Dominio | Usuario | Contraseña |
-|---|--------|---------|---------|------------|
-| 1 | Empresa Global | empresaglobal.com | admin@empresaglobal.com | password123 |
-| 2 | Tech Solutions | techsolutions.net | admin@techsolutions.net | password123 |
+### Requisitos Previos
 
----
+- PHP 8.1+
+- MySQL 8.0+
+- Composer
+- Node.js (para Vite)
 
-## 🔌 Endpoints de la API
+### Instalación
 
-### Autenticación
-- `POST /api/auth/login` - Iniciar sesión
-- `POST /api/auth/register` - Registrar usuario
-- `GET /api/auth/me` - Obtener usuario actual
-- `POST /api/auth/logout` - Cerrar sesión
-- `POST /api/auth/refresh` - Renovar token
-
-### Respuestas Estándar
-```json
-{
-    "status": "success|error",
-    "message": "Mensaje descriptivo",
-    "data": { /* Datos de respuesta */ }
-}
+1. **Clonar el repositorio**
+```bash
+git clone <repository-url>
+cd cms-multitenat
 ```
 
----
-
-## 🛠️ Comandos Principales
-
-### Gestión de Tenants
+2. **Instalar dependencias**
 ```bash
-# Crear tenant con subdominio
-php artisan tenant:create-named "Nombre" "subdominio"
-
-# Crear tenant con dominio completo
-php artisan tenant:create-domain "Nombre" "dominio.com"
-
-# Mostrar credenciales de todos los tenants
-php artisan tenant:show-credentials
-
-# Mostrar tipos de tenants
-php artisan tenant:show-types
-```
-
-### Pruebas y Validación
-```bash
-# Probar login en todos los tenants
-php artisan test:all-tenant-logins
-
-# Probar rutas del paquete auth
-php artisan test:auth-routes
-
-# Probar tenants con dominios completos
-php artisan test:domain-tenants
-```
-
-### Gestión de Base de Datos
-```bash
-# Listar bases de datos de tenants
-php artisan tenant:list-databases
-
-# Migrar nombres de bases de datos
-php artisan tenant:migrate-database-names
-```
-
----
-
-## 🧪 Cómo Probar el Sistema
-
-### 1. Configuración Inicial
-```bash
-# Instalar dependencias
 composer install
-
-# Configurar base de datos
-php artisan migrate
-
-# Crear tenants de prueba
-php artisan tenant:create-named "Test" "test"
+npm install
 ```
 
-### 2. Probar con Postman
-1. Importa la colección de Postman desde `docs/GUIA_POSTMAN.md`
-2. Configura los entornos para cada tipo de tenant
-3. Ejecuta las pruebas de autenticación
-
-### 3. Probar con Comandos
+3. **Configurar entorno**
 ```bash
-# Verificar que todo funciona
-php artisan test:all-tenant-logins
-
-# Mostrar información de tenants
-php artisan tenant:show-credentials
+cp .env.example .env
+php artisan key:generate
 ```
 
----
-
-## 🔧 Configuración del Entorno
-
-### Variables de Entorno Requeridas
+4. **Configurar base de datos**
 ```env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
@@ -151,148 +76,188 @@ DB_PORT=3306
 DB_DATABASE=cms_multitenant
 DB_USERNAME=root
 DB_PASSWORD=
-
-SANCTUM_STATEFUL_DOMAINS=kaelytechnology.test,empresaglobal.com,techsolutions.net
-SESSION_DOMAIN=.kaelytechnology.test
 ```
 
-### Configuración de Hosts (Opcional)
-```
-127.0.0.1 kaelytechnology.kaelytechnology.test
-127.0.0.1 tenant1.kaelytechnology.test
-127.0.0.1 miempresa.kaelytechnology.test
-127.0.0.1 empresaglobal.com
-127.0.0.1 techsolutions.net
-```
-
----
-
-## 📊 Estado del Sistema
-
-### ✅ Funcionalidades Implementadas
-- [x] Sistema multitenant con aislamiento completo
-- [x] Soporte para subdominios y dominios completos
-- [x] Autenticación con Laravel Sanctum
-- [x] Sistema de roles y permisos
-- [x] Comandos Artisan para gestión
-- [x] Pruebas automatizadas
-- [x] Documentación completa
-
-### 📈 Métricas
-- **Total de Tenants**: 5
-- **Subdominios**: 3
-- **Dominios Completos**: 2
-- **Logins Exitosos**: 100%
-- **APIs Funcionando**: 100%
-
----
-
-## 🚨 Solución de Problemas
-
-### Errores Comunes
-
-#### Error: "Connection refused"
+5. **Ejecutar migraciones**
 ```bash
-# Solución: Iniciar servidor
-php artisan serve
+php artisan migrate
 ```
 
-#### Error: "Database connection failed"
+6. **Crear tenants de prueba**
 ```bash
-# Solución: Ejecutar migraciones
-php artisan tenants:run "migrate"
+php artisan tenant:create-domain-tenant "Tech Solutions" "techsolutions.net"
+php artisan tenant:create-domain-tenant "Empresa Global" "empresaglobal.com"
 ```
 
-#### Error: "Unauthorized (401)"
+## 🧪 Testing
+
+### Probar Login API
+
 ```bash
-# Solución: Verificar credenciales
+# Probar login específico
+php artisan test:api-login techsolutions.net admin@techsolutions.net password123
+
+# Probar todos los tenants con dominios completos
+php artisan test:domain-tenants
+
+# Mostrar credenciales de todos los tenants
 php artisan tenant:show-credentials
 ```
 
-### Comandos de Diagnóstico
-```bash
-# Verificar estado de tenants
-php artisan tenants:list
+### Probar con Postman
 
-# Probar conexiones de base de datos
-php artisan tenants:run "db:show"
-
-# Ver logs de errores
-tail -f storage/logs/laravel.log
+1. **Configurar archivo hosts**:
+```
+127.0.0.1 techsolutions.net
+127.0.0.1 empresaglobal.com
+127.0.0.1 kaelytechnology.test
 ```
 
----
+2. **Importar colección**: [CMS_Multitenant_API.postman_collection.json](CMS_Multitenant_API.postman_collection.json)
 
-## 🔄 Flujo de Desarrollo
-
-### 1. Crear Nuevo Tenant
+3. **Ejecutar servidor**:
 ```bash
-# Para subdominio
-php artisan tenant:create-named "Mi Cliente" "micliente"
-
-# Para dominio completo
-php artisan tenant:create-domain "Mi Cliente" "micliente.com"
+php artisan serve --host=0.0.0.0 --port=8000
 ```
 
-### 2. Probar Funcionalidad
+4. **Probar login**:
+```
+POST http://techsolutions.net:8000/api/auth/login
+{
+    "email": "admin@techsolutions.net",
+    "password": "password123"
+}
+```
+
+## 🏗️ Arquitectura
+
+### Estructura de Base de Datos
+
+```
+cms_multitenant (Base de datos central)
+├── tenants (Tabla de inquilinos)
+├── domains (Tabla de dominios)
+└── migrations (Migraciones centrales)
+
+tenant_{tenant_id} (Base de datos por tenant)
+├── users (Usuarios del tenant)
+├── roles (Roles del tenant)
+├── permissions (Permisos del tenant)
+└── ... (Otras tablas específicas del tenant)
+```
+
+### Flujo de Autenticación
+
+1. **Resolución del Tenant**: El middleware `InitializeTenancyByDomain` identifica el tenant por dominio
+2. **Conexión de Base de Datos**: Se cambia automáticamente a la base de datos del tenant
+3. **Autenticación**: Se valida el usuario en el contexto del tenant
+4. **Generación de Token**: Se crea un token Sanctum para el usuario
+5. **Respuesta**: Se devuelve el token y datos del usuario
+
+## 🔧 Comandos Útiles
+
+### Gestión de Tenants
+
 ```bash
-# Verificar que funciona
+# Crear tenant con dominio completo
+php artisan tenant:create-domain-tenant "Nombre" "dominio.com"
+
+# Crear tenant con subdominio
+php artisan tenant:create-subdomain-tenant "Nombre" "subdominio"
+
+# Listar todos los tenants
+php artisan tenant:list
+
+# Mostrar credenciales
+php artisan tenant:show-credentials
+```
+
+### Testing y Debugging
+
+```bash
+# Probar login API
+php artisan test:api-login dominio.com email@dominio.com password
+
+# Probar todos los tenants
 php artisan test:all-tenant-logins
 
-# Probar APIs específicas
+# Probar rutas de autenticación
 php artisan test:auth-routes
+
+# Mostrar tipos de tenants
+php artisan tenant:show-types
 ```
 
-### 3. Documentar Cambios
-- Actualizar documentación técnica
-- Agregar casos de prueba
-- Documentar nuevas funcionalidades
+### Mantenimiento
 
----
-
-## 📞 Soporte y Contacto
-
-### Recursos Disponibles
-- **Documentación Técnica**: `docs/API_DOCUMENTATION.md`
-- **Guía Postman**: `docs/GUIA_POSTMAN.md`
-- **Logs del Sistema**: `storage/logs/laravel.log`
-
-### Comandos de Ayuda
 ```bash
-# Ver todos los comandos disponibles
-php artisan list
+# Limpiar cache
+php artisan config:clear
+php artisan route:clear
+php artisan cache:clear
 
-# Ver ayuda de un comando específico
-php artisan tenant:create-domain --help
+# Migrar SoftDeletes
+php artisan tenants:migrate-soft-deletes
+
+# Arreglar tenant específico
+php artisan fix:tech-solutions-soft-deletes
 ```
 
----
+## 🚀 Despliegue
 
-## 📝 Notas de Versión
+### Variables de Entorno de Producción
 
-### v1.0.0 - Versión Actual
-- ✅ Sistema multitenant funcional
-- ✅ Autenticación con Sanctum
-- ✅ Soporte para subdominios y dominios completos
-- ✅ Comandos de gestión completos
-- ✅ Documentación técnica y de usuario
-- ✅ Pruebas automatizadas
+```env
+APP_ENV=production
+APP_DEBUG=false
+DB_CONNECTION=mysql
+DB_HOST=your-db-host
+DB_PORT=3306
+DB_DATABASE=cms_multitenant
+DB_USERNAME=your-username
+DB_PASSWORD=your-password
 
-### Próximas Funcionalidades
-- [ ] Panel de administración web
-- [ ] Gestión de archivos por tenant
-- [ ] Sistema de notificaciones
-- [ ] API para gestión de tenants
-- [ ] Métricas y analytics
+SANCTUM_STATEFUL_DOMAINS=your-domain.com,another-domain.com
+SESSION_DOMAIN=.your-domain.com
+```
 
----
+### Optimizaciones
+
+```bash
+# Optimizar para producción
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+composer install --optimize-autoloader --no-dev
+```
+
+## 🤝 Contribución
+
+1. Fork el proyecto
+2. Crear una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abrir un Pull Request
 
 ## 📄 Licencia
 
-Este proyecto está bajo la licencia MIT. Ver el archivo `LICENSE` para más detalles.
+Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
 
----
+## 🆘 Soporte
 
-**Última actualización**: Julio 2024  
-**Versión**: 1.0.0  
-**Autor**: Sistema CMS Multitenant Laravel 
+Para soporte técnico o preguntas:
+
+- 📧 Email: soporte@kaelytechnology.com
+- 📖 Documentación: [docs/](docs/)
+- 🐛 Issues: [GitHub Issues](https://github.com/kaelytechnology/cms-multitenant/issues)
+
+## 🔄 Changelog
+
+### v1.0.0 (2024-01-XX)
+- ✅ Sistema multitenant funcional
+- ✅ Autenticación API con Sanctum
+- ✅ Soporte para dominios completos y subdominios
+- ✅ Gestión de usuarios, roles y permisos
+- ✅ Comandos Artisan para gestión y testing
+- ✅ Documentación completa
+- ✅ Solución del problema de login API 

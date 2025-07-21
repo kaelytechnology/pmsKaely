@@ -1,0 +1,492 @@
+{
+  "info": {
+    "name": "CMS Multitenant API",
+    "description": "Colección completa para probar el CMS multitenant con autenticación. Incluye endpoints para subdominios y dominios completos.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "email",
+      "value": "user687db17b8c62e@example.com",
+      "type": "string"
+    },
+    {
+      "key": "password",
+      "value": "password123",
+      "type": "string"
+    },
+    {
+      "key": "name",
+      "value": "Usuario Test",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "🔐 Autenticación",
+      "description": "Endpoints de autenticación del sistema multitenant",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"{{email}}\",\n    \"password\": \"{{password}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Iniciar sesión y obtener token de acceso"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.data && response.data.token) {",
+                  "        pm.environment.set('token', response.data.token);",
+                  "        console.log('✅ Token guardado:', response.data.token);",
+                  "        ",
+                  "        // Mostrar información del usuario",
+                  "        if (response.data.user) {",
+                  "            console.log('👤 Usuario:', response.data.user.name);",
+                  "            console.log('📧 Email:', response.data.user.email);",
+                  "        }",
+                  "    }",
+                  "} else {",
+                  "    console.log('❌ Error en login:', pm.response.text());",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "Registro",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{name}}\",\n    \"email\": \"{{email}}\",\n    \"password\": \"{{password}}\",\n    \"password_confirmation\": \"{{password}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "description": "Registrar nuevo usuario"
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener Usuario Actual",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/me",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "me"]
+            },
+            "description": "Obtener información del usuario autenticado"
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/logout",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "logout"]
+            },
+            "description": "Cerrar sesión e invalidar token"
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/refresh",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "refresh"]
+            },
+            "description": "Renovar token de acceso"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🔹 Tenants con Subdominios",
+      "description": "Pruebas específicas para tenants con subdominios",
+      "item": [
+        {
+          "name": "Kaely - Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"user687db17b8c62e@example.com\",\n    \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "http://kaelytechnology.kaelytechnology.test:8000/api/auth/login",
+              "host": ["kaelytechnology.kaelytechnology.test:8000"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Login en tenant Kaely"
+          },
+          "response": []
+        },
+        {
+          "name": "Tenant 1 - Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"usertenant1@example.com\",\n    \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "http://tenant1.kaelytechnology.test:8000/api/auth/login",
+              "host": ["tenant1.kaelytechnology.test:8000"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Login en tenant 1"
+          },
+          "response": []
+        },
+        {
+          "name": "Mi Empresa - Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"user687dc24f975d7@example.com\",\n    \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "http://miempresa.kaelytechnology.test:8000/api/auth/login",
+              "host": ["miempresa.kaelytechnology.test:8000"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Login en tenant Mi Empresa"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🔸 Tenants con Dominios Completos",
+      "description": "Pruebas específicas para tenants con dominios completos",
+      "item": [
+        {
+          "name": "Empresa Global - Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"admin@empresaglobal.com\",\n    \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "http://empresaglobal.com:8000/api/auth/login",
+              "host": ["empresaglobal.com:8000"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Login en tenant Empresa Global"
+          },
+          "response": []
+        },
+        {
+          "name": "Tech Solutions - Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"admin@techsolutions.net\",\n    \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "http://techsolutions.net:8000/api/auth/login",
+              "host": ["techsolutions.net:8000"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Login en tenant Tech Solutions"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🧪 Pruebas de Aislamiento",
+      "description": "Pruebas para verificar el aislamiento entre tenants",
+      "item": [
+        {
+          "name": "Verificar Aislamiento - Kaely",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://kaelytechnology.kaelytechnology.test:8000/api/auth/me",
+              "host": ["kaelytechnology.kaelytechnology.test:8000"],
+              "path": ["api", "auth", "me"]
+            },
+            "description": "Verificar que el token de Kaely solo funciona en Kaely"
+          },
+          "response": []
+        },
+        {
+          "name": "Verificar Aislamiento - Empresa Global",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://empresaglobal.com:8000/api/auth/me",
+              "host": ["empresaglobal.com:8000"],
+              "path": ["api", "auth", "me"]
+            },
+            "description": "Verificar que el token de Empresa Global solo funciona en Empresa Global"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📊 Información del Sistema",
+      "description": "Endpoints para obtener información del sistema",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/health",
+              "host": ["{{base_url}}"],
+              "path": ["api", "health"]
+            },
+            "description": "Verificar estado de salud del sistema"
+          },
+          "response": []
+        },
+        {
+          "name": "Tenant Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/tenant/status",
+              "host": ["{{base_url}}"],
+              "path": ["api", "tenant", "status"]
+            },
+            "description": "Obtener estado del tenant actual"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Script que se ejecuta antes de cada request",
+          "console.log('🚀 Ejecutando request:', pm.request.name);",
+          "console.log('🌐 URL:', pm.request.url.toString());",
+          "console.log('📅 Timestamp:', new Date().toISOString());"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Script que se ejecuta después de cada request",
+          "console.log('✅ Request completado:', pm.request.name);",
+          "console.log('📊 Status Code:', pm.response.code);",
+          "console.log('⏱️ Response Time:', pm.response.responseTime + 'ms');",
+          "",
+          "// Verificar si la respuesta fue exitosa",
+          "if (pm.response.code >= 200 && pm.response.code < 300) {",
+          "    console.log('🎉 Request exitoso');",
+          "} else {",
+          "    console.log('❌ Request fallido');",
+          "}"
+        ]
+      }
+    }
+  ]
+} 

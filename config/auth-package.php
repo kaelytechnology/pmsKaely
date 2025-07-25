@@ -14,10 +14,10 @@ return [
     // Modelos del paquete
     'models' => [
         'user' => \App\Models\User::class,
-        'role' => \Kaely\AuthPackage\Models\Role::class,
-        'permission' => \Kaely\AuthPackage\Models\Permission::class,
-        'role_category' => \Kaely\AuthPackage\Models\RoleCategory::class,
-        'module' => \Kaely\AuthPackage\Models\Module::class,
+        'role' => \App\Models\Role::class,
+        'permission' => \App\Models\Permission::class,
+        'role_category' => \App\Models\RoleCategory::class,
+        'module' => \App\Models\Module::class,
         'person' => \Kaely\AuthPackage\Models\Person::class,
     ],
 
@@ -64,4 +64,4 @@ return [
         'include_user_roles' => env('AUTH_INCLUDE_USER_ROLES', true),
         'include_user_permissions' => env('AUTH_INCLUDE_USER_PERMISSIONS', true),
     ],
-]; 
+];

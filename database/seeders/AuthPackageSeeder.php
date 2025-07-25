@@ -4,11 +4,11 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Kaely\AuthPackage\Models\User;
-use Kaely\AuthPackage\Models\Role;
-use Kaely\AuthPackage\Models\Permission;
-use Kaely\AuthPackage\Models\Module;
-use Kaely\AuthPackage\Models\RoleCategory;
+use App\Models\User;
+use App\Models\Role;
+use App\Models\Permission;
+use App\Models\Module;
+use App\Models\RoleCategory;
 
 class AuthPackageSeeder extends Seeder
 {
@@ -58,7 +58,10 @@ class AuthPackageSeeder extends Seeder
         ];
 
         foreach ($modules as $moduleData) {
-            Module::create($moduleData);
+            Module::firstOrCreate(
+                ['slug' => $moduleData['slug']],
+                $moduleData
+            );
         }   
 
         // Crear categorías de roles
@@ -81,7 +84,10 @@ class AuthPackageSeeder extends Seeder
         ];
 
         foreach ($roleCategories as $categoryData) {
-            RoleCategory::create($categoryData);
+            RoleCategory::firstOrCreate(
+                ['slug' => $categoryData['slug']],
+                $categoryData
+            );
         }
 
         // Crear roles
@@ -110,7 +116,10 @@ class AuthPackageSeeder extends Seeder
         ];
 
         foreach ($roles as $roleData) {
-            Role::create($roleData);
+            Role::firstOrCreate(
+                ['slug' => $roleData['slug']],
+                $roleData
+            );
         }
 
         // Crear permisos básicos
@@ -227,13 +236,16 @@ class AuthPackageSeeder extends Seeder
         ];
 
         foreach ($permissions as $permissionData) {
-            Permission::create($permissionData);
+            Permission::firstOrCreate(
+                ['slug' => $permissionData['slug']],
+                $permissionData
+            );
         }
 
         // Asignar todos los permisos al rol Super Admin
         $superAdminRole = Role::where('slug', 'super-admin')->first();
         $allPermissions = Permission::all();
-        $superAdminRole->permissions()->attach($allPermissions->pluck('id'));
+        $superAdminRole->permissions()->syncWithoutDetaching($allPermissions->pluck('id'));
 
         // Asignar permisos básicos al rol Admin
         $adminRole = Role::where('slug', 'admin')->first();
@@ -249,7 +261,7 @@ class AuthPackageSeeder extends Seeder
             'roles.edit',
             'permissions.view',
         ])->get();
-        $adminRole->permissions()->attach($adminPermissions->pluck('id'));
+        $adminRole->permissions()->syncWithoutDetaching($adminPermissions->pluck('id'));
 
         // Asignar permisos básicos al rol User
         $userRole = Role::where('slug', 'user')->first();
@@ -258,17 +270,24 @@ class AuthPackageSeeder extends Seeder
             'auth.logout',
             'auth.profile',
         ])->get();
-        $userRole->permissions()->attach($userPermissions->pluck('id'));
+        $userRole->permissions()->syncWithoutDetaching($userPermissions->pluck('id'));
 
         // Crear usuario administrador por defecto
-        $adminUser = User::create([
-            'name' => 'Admin User',
-            'email' => 'admin@example.com',
-            'password' => Hash::make('password'),
-            'is_active' => true,
-        ]);
+        $adminUser = User::firstOrCreate(
+            ['email' => 'admin@example.com'],
+            [
+                'name' => 'Admin User',
+                'email' => 'admin@example.com',
+                'password' => Hash::make('password'),
+                'is_active' => true,
+            ]
+        );
 
         // Asignar rol Super Admin al usuario administrador
-        $adminUser->roles()->attach($superAdminRole->id);
+        if ($superAdminRole) {
+            $adminUser->roles()->syncWithoutDetaching([$superAdminRole->id]);
+        } else {
+            throw new \Exception('No se encontró el rol Super Admin para asignar al usuario administrador.');
+        }
     }
-} 
+}

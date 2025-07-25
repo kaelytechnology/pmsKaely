@@ -1113,7 +1113,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/kaelytechnology/auth-package.git",
-                "reference": "0cdcf919de739cd3d9e29aa978fb191519eca231"
+                "reference": "ed4fec64aad414e2a5b8239478ba100c533e22ed"
             },
             "require": {
                 "laravel/framework": "^12.0",
@@ -1153,7 +1153,7 @@
                 }
             ],
             "description": "Paquete de autenticación para Laravel con roles y permisos (sin sucursales ni departamentos)",
-            "time": "2025-07-21T00:06:29+00:00"
+            "time": "2025-07-24T04:00:08+00:00"
         },
         {
             "name": "laravel/framework",

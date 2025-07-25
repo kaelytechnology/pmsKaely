@@ -22,7 +22,9 @@ class CreateDomainTenant extends Command
         
         // Crear el tenant
         $tenant = Tenant::create([
-            'id' => uniqid(),
+            //'id' => uniqid(),
+            'id' => uniqid() . '_' . str_replace(['.', '-'], '_', strtolower($domain)), 
+
             'tenancy_data' => ['name' => $name]
         ]);
         

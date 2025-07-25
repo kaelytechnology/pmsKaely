@@ -38,12 +38,15 @@ class FixTechSolutionsSoftDeletes extends Command
                 }
                 
                 // Agregar la columna
-                $this->info("🔄 Agregando columna deleted_at...");
-                Schema::table('users', function ($table) {
-                    $table->softDeletes();
-                });
-                
-                $this->info("✅ Columna deleted_at agregada exitosamente");
+                $this->info("🔄 Agregando columna deleted_at si no existe...");
+                if (!Schema::hasColumn('users', 'deleted_at')) {
+                    Schema::table('users', function ($table) {
+                        $table->softDeletes();
+                    });
+                    $this->info("Columna deleted_at agregada.");
+                } else {
+                    $this->info("La columna deleted_at ya existe en la tabla users.");
+                }
                 
                 // Verificar que se agregó correctamente
                 $hasColumnAfter = Schema::hasColumn('users', 'deleted_at');

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('route')->nullable();
             $table->boolean('is_active')->default(true);
             // Campo para árbol de módulos (parent_id)
-            $table->unsignedBigInteger('parent_id')->default(0);
+            $table->unsignedBigInteger('parent_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
             

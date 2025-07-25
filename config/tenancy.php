@@ -18,9 +18,9 @@ return [
      * Only relevant if you're using the domain or subdomain identification middleware.
      */
     'central_domains' => [
-        'kaelytechnology.test',
-        'http://empresaglobal.com:8000',
-        'http://techsolutions.net:8000',
+        'kaelytechnology.com',
+        //'http://empresaglobal.com:8000',
+        //'http://techsolutions.net:8000',
         '127.0.0.1',
         'localhost',
     ],
